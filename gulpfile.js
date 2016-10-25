@@ -23,12 +23,12 @@ var ddbLocalPort = 8079;
 
 // Delete the dist directory
 gulp.task('clean', function (cb) {
-  del(['cookbooks/dromedary/files/app/*', 'dist'], cb);
+  del(['./cookbooks/dromedary/files/app/*', 'dist'], cb);
 });
 
 // Execute unit tests
 gulp.task('test', function () {
-  return gulp.src('test/*.js', {read: false})
+  return gulp.src('./test/*.js', {read: false})
              .pipe(mocha({reporter: 'spec'}));
 });
 
@@ -40,7 +40,7 @@ gulp.task('lint-app', function() {
              .pipe(jshint.reporter('fail'));
 });
 gulp.task('lint-charthandler', function() {
-  return gulp.src('public/charthandler.js')
+  return gulp.src('./public/charthandler.js')
              .pipe(jshint({ 'globals': { Chart: true, dromedaryChartHandler: true }}))
              .pipe(jshint.reporter('default', { verbose: true }))
              .pipe(jshint.reporter('fail'));
@@ -54,20 +54,20 @@ gulp.task('lint', function(callback) {
 
 // Copy dromedary app to cookbooks/dromedary/files/default/app
 gulp.task('cookbookfiles:app', function () {
-  return gulp.src(['app.js', 'appspec.yml'] )
-             .pipe(gulp.dest('cookbooks/dromedary/files/default/app'));
+  return gulp.src(['./app.js', './appspec.yml'] )
+             .pipe(gulp.dest('./cookbooks/dromedary/files/default/app'));
 });
 gulp.task('cookbookfiles:lib', function () {
-  return gulp.src(['lib/*.js'] )
-             .pipe(gulp.dest('cookbooks/dromedary/files/default/app/lib'));
+  return gulp.src(['./lib/*.js'] )
+             .pipe(gulp.dest('./cookbooks/dromedary/files/default/app/lib'));
 });
 gulp.task('cookbookfiles:public', function () {
-  return gulp.src(['public/*'] )
-             .pipe(gulp.dest('cookbooks/dromedary/files/default/app/public'));
+  return gulp.src(['./public/*'] )
+             .pipe(gulp.dest('./cookbooks/dromedary/files/default/app/public'));
 });
 gulp.task('cookbookfiles:package', function () {
-  return gulp.src(['package.json'])
-             .pipe(gulp.dest('cookbooks/dromedary/files/default/app'))
+  return gulp.src(['./package.json'])
+             .pipe(gulp.dest('./cookbooks/dromedary/files/default/app'))
              .pipe(install({production: true}));
 });
 
@@ -84,7 +84,7 @@ gulp.task('copy-to-cookbooks', function(callback) {
 
 // Copy cookbooks to dist/
 gulp.task('dist:berks-vendor', function (cb) {
-  exec('cd cookbooks/dromedary/ && berks vendor ../../dist', function (err, stdout, stderr) {
+  exec('cd ./cookbooks/dromedary/ && berks vendor ../../dist', function (err, stdout, stderr) {
     gutil.log(stdout);
     gutil.log(stderr);
     cb(err);
@@ -93,10 +93,10 @@ gulp.task('dist:berks-vendor', function (cb) {
 
 // Create tarball
 gulp.task('dist:tar', function () {
-  return gulp.src('dist/**/*')
-             .pipe(tar('archive.tar'))
+  return gulp.src('./dist/**/*')
+             .pipe(tar('./archive.tar'))
              .pipe(gzip())
-             .pipe(gulp.dest('dist'));
+             .pipe(gulp.dest('./dist'));
 });
 
 // 'dist' ties together all dist tasks
@@ -195,26 +195,26 @@ gulp.task('default', function(callback) {
 
 
 gulp.task('package-site', ['lint-charthandler'],function () {
-  return gulp.src('public/**/*')
-      .pipe(zip('site.zip'))
-      .pipe(gulp.dest('dist'));
+  return gulp.src('./public/**/*')
+      .pipe(zip('./site.zip'))
+      .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('dist-app', function() {
-  return gulp.src(['package.json','index.js','app.js','lib{,/*.js}'])
-      .pipe(gulp.dest('dist/app/'))
+  return gulp.src(['./package.json','./index.js','./app.js','./lib{,/*.js}'])
+      .pipe(gulp.dest('./dist/app/'))
       .pipe(install({production: true}));
 });
 
 gulp.task('package-app', ['lint-app','test','dist-app'], function () {
-  return gulp.src(['!dist/app/package.json','!dist/app/**/aws-sdk{,/**}', 'dist/app/**/*'])
-      .pipe(zip('lambda.zip'))
-      .pipe(gulp.dest('dist'));
+  return gulp.src(['!./dist/app/package.json','!./dist/app/**/aws-sdk{,/**}', './dist/app/**/*'])
+      .pipe(zip('./lambda.zip'))
+      .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('package-swagger', function() {
-  return gulp.src('swagger.json')
-      .pipe(gulp.dest('dist/'));
+  return gulp.src('./swagger.json')
+      .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('package',['package-site','package-app','package-swagger'],  function() {
