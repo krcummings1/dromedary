@@ -28,6 +28,7 @@ gulp.task('clean', function (cb) {
 
 // Execute unit tests
 gulp.task('test', function () {
+  console.log('test task');
   return gulp.src('./test/*.js', {read: false})
              .pipe(mocha({reporter: 'spec'}));
 });
@@ -195,18 +196,21 @@ gulp.task('default', function(callback) {
 
 
 gulp.task('package-site', ['lint-charthandler'],function () {
+  console.log('package-site task');
   return gulp.src('./public/**/*')
       .pipe(zip('./site.zip'))
       .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('dist-app', function() {
+  console.log('dist-app task');
   return gulp.src(['./package.json','./index.js','./app.js','./lib{,/*.js}'])
       .pipe(gulp.dest('./dist/app/'))
       .pipe(install({production: true}));
 });
 
 gulp.task('package-app', ['lint-app','test','dist-app'], function () {
+  console.log('package-app task');
   return gulp.src(['!./dist/app/package.json','!./dist/app/**/aws-sdk{,/**}', './dist/app/**/*'])
       .pipe(zip('./lambda.zip'))
       .pipe(gulp.dest('./dist'));
@@ -218,6 +222,7 @@ gulp.task('package-swagger', function() {
 });
 
 gulp.task('package',['package-site','package-app','package-swagger'],  function() {
+  console.log('package task');
 });
 
 
